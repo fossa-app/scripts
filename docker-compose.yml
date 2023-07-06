@@ -21,7 +21,7 @@ services:
   fusionauth:
     image: fusionauth/fusionauth-app-mysql:latest
     build:
-      context: .
+      context: ./fusionauth
       dockerfile: ./fusionauth.Dockerfile
     depends_on:
       db:
