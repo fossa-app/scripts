@@ -2,14 +2,16 @@ version: '3'
 
 services:
   db:
-    image: mysql:8.0.33
+    image: tiksn-fusionauth:latest
+    build:
+      context: ./tiksn-fusionauth
+      dockerfile: ./tiksn-fusionauth.Dockerfile
     environment:
       MYSQL_DATABASE: fusionauth
       MYSQL_USER: fusionauth
       MYSQL_PASSWORD: fusionauth
-      MYSQL_ROOT_PASSWORD: rootpassword
     healthcheck:
-      test: mysql -u"$${MYSQL_USER}" -p"$${MYSQL_PASSWORD}" -hdb "$${MYSQL_DATABASE}" -e 'SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES LIMIT 1;'
+      test: dolt sql-client --host=db --port=3306 --user="$${MYSQL_USER}" --password="$${MYSQL_PASSWORD}" --use-db="$${MYSQL_DATABASE}" --query="SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES LIMIT 1;"
       interval: 20s
       timeout: 5s
       retries: 10
@@ -18,6 +20,8 @@ services:
       - 3306:3306
     networks:
       - db_net
+    volumes:
+      - db_data:/dolthub-dbs
 
   search:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.17.0
@@ -45,7 +49,7 @@ services:
   fusionauth:
     image: fusionauth/fusionauth-app-mysql:latest
     build:
-      context: .
+      context: ./fusionauth
       dockerfile: ./fusionauth.Dockerfile
     depends_on:
       db:
@@ -54,8 +58,8 @@ services:
         condition: service_healthy
     environment:
       DATABASE_URL: jdbc:mysql://db:3306/fusionauth?serverTimezone=UTC&useSSL=false&allowPublicKeyRetrieval=true&rewriteBatchedStatements=true&cachePrepStmts=true&prepStmtCacheSize=250&prepStmtCacheSqlLimit=2048&useServerPrepStmts=true&useUnicode=true&characterEncoding=UTF-8
-      DATABASE_ROOT_USER: root
-      DATABASE_ROOT_PASSWORD: rootpassword
+      DATABASE_ROOT_USER: fusionauth
+      DATABASE_ROOT_PASSWORD: fusionauth
       DATABASE_USERNAME: fusionauth
       DATABASE_PASSWORD: fusionauth
       FUSIONAUTH_APP_MEMORY: ${FUSIONAUTH_APP_MEMORY}
@@ -80,5 +84,6 @@ networks:
     driver: bridge
 
 volumes:
+  db_data:
   fusionauth_config:
   search_data:
