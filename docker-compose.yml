@@ -29,7 +29,7 @@ services:
       ES_JAVA_OPTS: ${ES_JAVA_OPTS}
     healthcheck:
       test: [ "CMD", "curl",  "--fail" ,"--write-out", "'HTTP %{http_code}'", "--silent", "--output", "/dev/null", "http://localhost:9200/" ]
-      interval: 5s
+      interval: 20s
       timeout: 5s
       retries: 5
     networks:
