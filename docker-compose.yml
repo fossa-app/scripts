@@ -12,7 +12,7 @@ services:
       test: mysql -u"$${MYSQL_USER}" -p"$${MYSQL_PASSWORD}" -hdb "$${MYSQL_DATABASE}" -e 'SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES LIMIT 1;'
       interval: 20s
       timeout: 5s
-      retries: 5
+      retries: 10
       start_period: 30s
     ports:
       - 3306:3306
@@ -29,9 +29,9 @@ services:
       ES_JAVA_OPTS: ${ES_JAVA_OPTS}
     healthcheck:
       test: [ "CMD", "curl",  "--fail" ,"--write-out", "'HTTP %{http_code}'", "--silent", "--output", "/dev/null", "http://localhost:9200/" ]
-      interval: 5s
+      interval: 20s
       timeout: 5s
-      retries: 5
+      retries: 10
     networks:
       - search_net
     restart: unless-stopped
