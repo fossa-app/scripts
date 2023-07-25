@@ -1,6 +1,6 @@
 $ErrorActionPreference = 'Stop'
 
-docker compose down
+docker compose down --volumes
 
 $dockerVolumes = docker volume ls --format json | ConvertFrom-Json -Depth 100
 
