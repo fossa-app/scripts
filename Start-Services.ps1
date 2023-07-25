@@ -1,3 +1,3 @@
 $ErrorActionPreference = 'Stop'
 
-docker compose up
+docker compose up --detach --wait
