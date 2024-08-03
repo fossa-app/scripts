@@ -9,11 +9,11 @@ services:
       MYSQL_USER: fusionauth
       MYSQL_PASSWORD: fusionauth
     healthcheck:
-      test: dolt sql-client --host=db --port=3306 --user="$${MYSQL_USER}" --password="$${MYSQL_PASSWORD}" --use-db="$${MYSQL_DATABASE}" --query="SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES LIMIT 1;"
-      interval: 20s
+      test: mysql --host=db --port=3306 --user="$${MYSQL_USER}" --password="$${MYSQL_PASSWORD}" --database="$${MYSQL_DATABASE}" --execute="SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES LIMIT 1;"
+      interval: 5s
       timeout: 5s
       retries: 10
-      start_period: 30s
+      start_period: 5s
     ports:
       - 3306:3306
     networks:

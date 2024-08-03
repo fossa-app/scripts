@@ -131,9 +131,10 @@ _main() {
 }
 
 _main "\$@"
-  
+
 EOF
 
+RUN apt install -y mysql-client
 RUN chmod +x /entrypoint.sh
 ENTRYPOINT [ "/entrypoint.sh" ]
 
