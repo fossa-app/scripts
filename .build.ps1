@@ -7,10 +7,13 @@ task CreateDotEnv -If { -not (Test-Path -Path '.env') } {
 
     $connectionString = Get-Secret -Name 'FossaApp-ConnectionString' -AsPlainText
 
+    $generatorId = Get-Random -Maximum 1024
+
     $userEnvironmentVariables = @{
-        'DOTNET_ENVIRONMENT'       = $environmentName
-        'ASPNETCORE_ENVIRONMENT'   = $environmentName
-        'ConnectionStrings__Mongo' = $connectionString
+        'DOTNET_ENVIRONMENT'         = $environmentName
+        'ASPNETCORE_ENVIRONMENT'     = $environmentName
+        'ConnectionStrings__MongoDB' = $connectionString
+        'GeneratorId'                = $generatorId
     }
 
     $userEnvironmentVariables.GetEnumerator()
