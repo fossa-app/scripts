@@ -9,3 +9,5 @@ if (-not (Get-SecretVault -Name SecretStore -ErrorAction SilentlyContinue)) {
 if (-not (Get-SecretVault -Name FossaApp -ErrorAction SilentlyContinue)) {
     Register-KeybaseSecretVault -Name FossaApp -Namespace FossaApp -Team fossaapp
 }
+
+Install-Module -Name InvokeBuild -Force
