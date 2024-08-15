@@ -15,7 +15,7 @@ services:
     ports:
       - 3306:3306
     networks:
-      - db_net
+      - app_net
     restart: unless-stopped
 
   fusionauth:
@@ -41,16 +41,34 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
-    networks:
-      - db_net
-    restart: unless-stopped
     ports:
       - 9011:9011
     volumes:
       - fusionauth_config:/usr/local/fusionauth/config
+    networks:
+      - app_net
+    restart: unless-stopped
+
+  api:
+    image: tiksn/fossa-api:latest
+    depends_on:
+      fusionauth:
+        condition: service_healthy
+    environment:
+      ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT}
+      DOTNET_ENVIRONMENT: ${DOTNET_ENVIRONMENT}
+      Identity__RootAddress: http://fusionauth:9011
+      ConnectionStrings__MongoDB: ${ConnectionStrings__MongoDB}
+      GeneratorId: ${GeneratorId}
+    ports:
+      - 20955:8080
+    networks:
+      - app_net
+    restart: unless-stopped
+
 
 networks:
-  db_net:
+  app_net:
     driver: bridge
 
 volumes:
