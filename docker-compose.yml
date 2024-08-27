@@ -36,6 +36,7 @@ services:
       FUSIONAUTH_APP_RUNTIME_MODE: development
       FUSIONAUTH_APP_URL: http://fusionauth:9011
       SEARCH_TYPE: database
+      FUSIONAUTH_APP_KICKSTART_FILE: /usr/local/fusionauth/kickstart/kickstart.json
     healthcheck:
       test: curl --silent --fail http://localhost:9011/api/status -o /dev/null -w "%{http_code}"
       interval: 5s
@@ -45,9 +46,21 @@ services:
       - 9011:9011
     volumes:
       - fusionauth_config:/usr/local/fusionauth/config
+      - ./kickstart:/usr/local/fusionauth/kickstart
     networks:
       - app_net
     restart: unless-stopped
+
+  ergo:
+    image: tiksn/ergo:latest
+    depends_on:
+      fusionauth:
+        condition: service_healthy
+    environment:
+      FUSIONAUTH_API_KEY: 047a124c-2dbc-4b68-84cc-55f9a204f4ea
+      FUSIONAUTH_BASE_URL: http://fusionauth:9011/
+    networks:
+      - app_net
 
   api:
     image: tiksn/fossa-api:latest
