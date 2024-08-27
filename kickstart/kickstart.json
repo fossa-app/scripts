@@ -1,0 +1,12 @@
+{
+  "variables": {
+    "apiKey": "047a124c-2dbc-4b68-84cc-55f9a204f4ea",
+    "defaultTenantId": "4be75029-1365-d0e4-0bb8-34c58aac6745"
+  },
+  "apiKeys": [
+    {
+      "key": "#{apiKey}",
+      "description": "Unrestricted API key"
+    }
+  ]
+}
