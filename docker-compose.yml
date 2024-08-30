@@ -80,6 +80,17 @@ services:
       - app_net
     restart: unless-stopped
 
+  ui:
+    image: tiksn/fossa-ui:latest
+    depends_on:
+      api:
+        condition: service_healthy
+    ports:
+      - 4210:3000
+    networks:
+      - app_net
+    restart: unless-stopped
+
 
 networks:
   app_net:
