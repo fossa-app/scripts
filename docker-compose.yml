@@ -75,7 +75,7 @@ services:
       ConnectionStrings__MongoDB: ${ConnectionStrings__MongoDB}
       GeneratorId: ${GeneratorId}
     ports:
-      - 20955:8080
+      - 5210:8080
     networks:
       - app_net
     restart: unless-stopped
