@@ -1,35 +1,30 @@
 services:
   db:
-    image: mysql:8.0.33
+    image: postgres:16.0-bookworm
     environment:
-      MYSQL_DATABASE: fusionauth
-      MYSQL_USER: fusionauth
-      MYSQL_PASSWORD: fusionauth
-      MYSQL_ROOT_PASSWORD: rootpassword
+      PGDATA: /var/lib/postgresql/data/pgdata
+      POSTGRES_USER: fusionauth
+      POSTGRES_PASSWORD: fusionauth
     healthcheck:
-      test: mysql -u"$${MYSQL_USER}" -p"$${MYSQL_PASSWORD}" -hdb "$${MYSQL_DATABASE}" -e 'SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES LIMIT 1;'
-      interval: 20s
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 5s
       timeout: 5s
-      retries: 10
-      start_period: 30s
-    ports:
-      - 3306:3306
+      retries: 5
     networks:
-      - app_net
+      - db_net
     restart: unless-stopped
+    volumes:
+      - db_data:/var/lib/postgresql/data
 
   fusionauth:
-    image: fusionauth/fusionauth-app-mysql:latest
-    build:
-      context: ./fusionauth
-      dockerfile: ./fusionauth.Dockerfile
+    image: fusionauth/fusionauth-app:latest
     depends_on:
       db:
         condition: service_healthy
     environment:
-      DATABASE_URL: jdbc:mysql://db:3306/fusionauth?serverTimezone=UTC&useSSL=false&allowPublicKeyRetrieval=true&rewriteBatchedStatements=true&cachePrepStmts=true&prepStmtCacheSize=250&prepStmtCacheSqlLimit=2048&useServerPrepStmts=true&useUnicode=true&characterEncoding=UTF-8
-      DATABASE_ROOT_USERNAME: root
-      DATABASE_ROOT_PASSWORD: rootpassword
+      DATABASE_URL: jdbc:postgresql://db:5432/fusionauth
+      DATABASE_ROOT_USERNAME: fusionauth
+      DATABASE_ROOT_PASSWORD: fusionauth
       DATABASE_USERNAME: fusionauth
       DATABASE_PASSWORD: fusionauth
       FUSIONAUTH_APP_MEMORY: 512M
@@ -44,11 +39,13 @@ services:
       retries: 5
     ports:
       - 9011:9011
+    networks:
+      - db_net
+      - idp_net
+      - app_net
     volumes:
       - fusionauth_config:/usr/local/fusionauth/config
       - ./kickstart:/usr/local/fusionauth/kickstart
-    networks:
-      - app_net
     restart: unless-stopped
 
   ergo:
@@ -60,7 +57,7 @@ services:
       FUSIONAUTH_API_KEY: 047a124c-2dbc-4b68-84cc-55f9a204f4ea
       FUSIONAUTH_BASE_URL: http://fusionauth:9011/
     networks:
-      - app_net
+      - idp_net
 
   api:
     image: tiksn/fossa-api:latest
@@ -91,10 +88,14 @@ services:
       - app_net
     restart: unless-stopped
 
-
 networks:
+  db_net:
+    driver: bridge
+  idp_net:
+    driver: bridge
   app_net:
     driver: bridge
 
 volumes:
+  db_data:
   fusionauth_config:
