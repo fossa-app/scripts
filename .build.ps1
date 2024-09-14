@@ -2,8 +2,9 @@ Set-StrictMode -Version Latest
 
 task CreateDotEnv -If { -not (Test-Path -Path '.env') } {
     $keybaseUserName = Exec { keybase whoami }
+    $environmentUserName = $keybaseUserName -replace '[^a-zA-Z]', ''
 
-    $environmentName = "$keybaseUserName-Local-Development".ToUpperInvariant()
+    $environmentName = "$environmentUserName-Local-Development".ToUpperInvariant()
 
     $connectionString = Get-Secret -Name 'FossaApp-ConnectionString' -AsPlainText
 
