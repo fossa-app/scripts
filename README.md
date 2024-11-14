@@ -18,5 +18,5 @@
 
 > To get started, open PowerShell and then navigate to the root folder of the cloned repository
 
-- To start all services run `.\Start.ps1`
+- To start all services run `.\Start.ps1` or `.\Start.ps1 -Pull`
 - To stop all services run `.\Stop.ps1`
