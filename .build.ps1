@@ -1,3 +1,10 @@
+[CmdletBinding()]
+param (
+    [Parameter()]
+    [bool]
+    $Pull
+)
+
 Set-StrictMode -Version Latest
 
 task CreateDotEnv -If { -not (Test-Path -Path '.env') } {
@@ -25,7 +32,11 @@ task CreateDotEnv -If { -not (Test-Path -Path '.env') } {
     | Out-File -FilePath '.env' -Force
 }
 
-task Start CreateDotEnv, {
+task Pull -If $Pull CreateDotEnv, {
+    Exec { docker compose pull }
+}
+
+task Start CreateDotEnv, Pull, {
     Exec { docker compose up --detach --wait }
 }
 
