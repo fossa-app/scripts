@@ -14,6 +14,7 @@ task CreateDotEnv -If { -not (Test-Path -Path '.env') } {
     $environmentName = "$environmentUserName-Local-Development".ToUpperInvariant()
 
     $connectionString = Get-Secret -Name 'FossaApp-ConnectionString' -AsPlainText
+    $datadogApiKey = Get-Secret -Name 'FossaApp-DatadogApiKey' -AsPlainText
 
     $generatorId = Get-Random -Maximum 1024
 
@@ -22,6 +23,7 @@ task CreateDotEnv -If { -not (Test-Path -Path '.env') } {
         'ASPNETCORE_ENVIRONMENT'     = $environmentName
         'ConnectionStrings__MongoDB' = $connectionString
         'GeneratorId'                = $generatorId
+        'DD_API_KEY'                 = $datadogApiKey
     }
 
     $userEnvironmentVariables.GetEnumerator()
