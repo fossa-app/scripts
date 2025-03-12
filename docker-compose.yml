@@ -91,6 +91,7 @@ services:
       Identity__ApiKey: 047a124c-2dbc-4b68-84cc-55f9a204f4ea
       ConnectionStrings__MongoDB: ${ConnectionStrings__MongoDB}
       GeneratorId: ${GeneratorId}
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://otel-collector:4317
     ports:
       - 5210:8080
     networks:
