@@ -2,9 +2,12 @@
 param (
     [Parameter()]
     [switch]
-    $Pull
+    $Pull,
+    [Parameter()]
+    [string[]]
+    $Services
 )
 
 Import-Module -Name InvokeBuild
 
-Invoke-Build -Task Start -Summary -Pull ($Pull.IsPresent)
+Invoke-Build -Task Start -Summary -Pull ($Pull.IsPresent) -Services $Services

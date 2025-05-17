@@ -2,7 +2,10 @@
 param (
     [Parameter()]
     [bool]
-    $Pull
+    $Pull,
+    [Parameter()]
+    [string[]]
+    $Services
 )
 
 Set-StrictMode -Version Latest
@@ -39,7 +42,7 @@ task Pull -If $Pull CreateDotEnv, {
 }
 
 task Start CreateDotEnv, Pull, {
-    Exec { docker compose up --detach --wait }
+    Exec { docker compose up --detach --wait $Services }
 }
 
 task Stop {
