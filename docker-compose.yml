@@ -1,5 +1,5 @@
 services:
-  db:
+  fusionauth-db:
     image: postgres:16.0-bookworm
     environment:
       PGDATA: /var/lib/postgresql/data/pgdata
@@ -11,18 +11,18 @@ services:
       timeout: 5s
       retries: 5
     networks:
-      - db_net
+      - fusionauth_db_net
     restart: unless-stopped
     volumes:
-      - db_data:/var/lib/postgresql/data
+      - fusionauth_db_data:/var/lib/postgresql/data
 
   fusionauth:
     image: fusionauth/fusionauth-app:latest
     depends_on:
-      db:
+      fusionauth-db:
         condition: service_healthy
     environment:
-      DATABASE_URL: jdbc:postgresql://db:5432/fusionauth
+      DATABASE_URL: jdbc:postgresql://fusionauth-db:5432/fusionauth
       DATABASE_ROOT_USERNAME: fusionauth
       DATABASE_ROOT_PASSWORD: fusionauth
       DATABASE_USERNAME: fusionauth
@@ -40,7 +40,7 @@ services:
     ports:
       - 9011:9011
     networks:
-      - db_net
+      - fusionauth_db_net
       - idp_net
       - app_net
     volumes:
@@ -110,7 +110,7 @@ services:
     restart: unless-stopped
 
 networks:
-  db_net:
+  fusionauth_db_net:
     driver: bridge
   idp_net:
     driver: bridge
@@ -118,5 +118,5 @@ networks:
     driver: bridge
 
 volumes:
-  db_data:
+  fusionauth_db_data:
   fusionauth_config:
