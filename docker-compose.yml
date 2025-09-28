@@ -59,6 +59,27 @@ services:
     networks:
       - idp_net
 
+  drool:
+    image: tiksn/drool:latest
+    depends_on:
+      fusionauth:
+        condition: service_healthy
+    environment:
+      TF_IN_AUTOMATION: "true"
+      TF_INPUT: "0"
+      TF_VAR_fusionauth_api_key: "047a124c-2dbc-4b68-84cc-55f9a204f4ea"
+      TF_VAR_fusionauth_base_url: "http://fusionauth:9011"
+      TF_VAR_fusionauth_cors_enabled: "true"
+      TF_VAR_fusionauth_cors_allowed_origins: '["*"]'
+      TF_VAR_fusionauth_cors_allowed_methods: '["GET", "POST", "OPTIONS"]'
+      TF_VAR_fusionauth_cors_allowed_headers: '["*"]'
+      TF_VAR_fusionauth_cors_exposed_headers: '[]'
+      TF_VAR_fusionauth_cors_allow_credentials: "false"
+      TF_VAR_fusionauth_cors_preflight_max_age_in_seconds: "0"
+      TF_CLI_ARGS_apply: "-auto-approve"
+    networks:
+      - idp_net
+
   otel-collector:
     image: otel/opentelemetry-collector-contrib:latest
     environment:
