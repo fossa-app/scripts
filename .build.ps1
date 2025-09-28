@@ -42,7 +42,32 @@ task Pull -If $Pull CreateDotEnv, {
 }
 
 task Start CreateDotEnv, Pull, {
-    Exec { docker compose up --detach --wait $Services }
+    try {
+        Exec { docker compose up --detach --wait $Services }
+    }
+    catch {
+        $containerIds = & docker compose ps --all -q 2>$null
+
+        if (-not $containerIds) {
+            throw $_
+        }
+
+        $nonZero = @()
+        foreach ($id in $containerIds) {
+            $info = & docker inspect -f '{{.Name}} {{.State.ExitCode}}' $id 2>$null
+            if (-not $info) { continue }
+            $parts = $info -split '\s+'
+            $name = ($parts[0] -replace '^/', '')
+            $code = 0
+            if ($parts.Length -gt 1) { [int]::TryParse($parts[1], [ref]$code) | Out-Null }
+            if ($code -ne 0) { $nonZero += "$name ($code)" }
+        }
+
+        if ($nonZero.Count -gt 0) {
+            Write-Error "Found containers with non-zero exit codes: $($nonZero -join ', ')"
+            throw $_
+        }
+    }
 }
 
 task Stop {
