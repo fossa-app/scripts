@@ -17,15 +17,20 @@ exporters:
     api:
       key: ${DD_API_KEY}
       site: us5.datadoghq.com
+  otlphttp/honeycomb:
+    endpoint: "https://api.honeycomb.io"
+    headers:
+      "x-honeycomb-team": "${HONEYCOMB_API_KEY}"
+      "x-honeycomb-dataset": "${HONEYCOMB_DATASET}"
 
 service:
   pipelines:
     metrics:
       receivers: [otlp]
-      exporters: [datadog]
+      exporters: [datadog, otlphttp/honeycomb]
     traces:
       receivers: [otlp]
-      exporters: [datadog]
+      exporters: [datadog, otlphttp/honeycomb]
     logs:
       receivers: [otlp]
-      exporters: [datadog]
+      exporters: [datadog, otlphttp/honeycomb]

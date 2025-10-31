@@ -18,6 +18,7 @@ task CreateDotEnv -If { -not (Test-Path -Path '.env') } {
 
     $connectionString = Get-Secret -Name 'FossaApp-ConnectionString' -AsPlainText
     $datadogApiKey = Get-Secret -Name 'FossaApp-DatadogApiKey' -AsPlainText
+    $honeycombApiKey = Get-Secret -Name 'FossaApp-HoneycombApiKey' -AsPlainText
 
     $generatorId = Get-Random -Maximum 1024
 
@@ -27,6 +28,8 @@ task CreateDotEnv -If { -not (Test-Path -Path '.env') } {
         'ConnectionStrings__MongoDB' = $connectionString
         'GeneratorId'                = $generatorId
         'DD_API_KEY'                 = $datadogApiKey
+        'HONEYCOMB_API_KEY'          = $honeycombApiKey
+        'HONEYCOMB_DATASET'          = 'FossaApp-Local'
     }
 
     $userEnvironmentVariables.GetEnumerator()
