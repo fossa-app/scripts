@@ -18,10 +18,12 @@ exporters:
       key: ${DD_API_KEY}
       site: us5.datadoghq.com
   otlphttp/honeycomb:
-    endpoint: "https://api.honeycomb.io"
+    endpoint: "https://api.honeycomb.io:443"
     headers:
       "x-honeycomb-team": "${HONEYCOMB_API_KEY}"
       "x-honeycomb-dataset": "${HONEYCOMB_DATASET}"
+  sentry:
+    dsn: ${SENTRY_DSN}
 
 service:
   pipelines:
@@ -30,7 +32,7 @@ service:
       exporters: [datadog, otlphttp/honeycomb]
     traces:
       receivers: [otlp]
-      exporters: [datadog, otlphttp/honeycomb]
+      exporters: [datadog, otlphttp/honeycomb, sentry]
     logs:
       receivers: [otlp]
       exporters: [datadog, otlphttp/honeycomb]

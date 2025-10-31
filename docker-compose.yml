@@ -86,6 +86,7 @@ services:
       DD_API_KEY: ${DD_API_KEY}
       HONEYCOMB_API_KEY: ${HONEYCOMB_API_KEY}
       HONEYCOMB_DATASET: ${HONEYCOMB_DATASET}
+      SENTRY_DSN: ${SENTRY_DSN}
     volumes:
       - ./otel-collector-config.yaml:/etc/otelcol-contrib/config.yaml
     ports:
