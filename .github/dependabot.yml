@@ -9,3 +9,12 @@ updates:
   - tiksn
   assignees:
   - tiksn
+- package-ecosystem: nuget
+  directory: "/"
+  schedule:
+    interval: daily
+  open-pull-requests-limit: 10
+  reviewers:
+  - tiksn
+  assignees:
+  - tiksn
