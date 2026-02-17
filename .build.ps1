@@ -32,6 +32,7 @@ task CreateDotEnv -If { -not (Test-Path -Path '.env') } {
         'HONEYCOMB_API_KEY'          = $honeycombApiKey
         'HONEYCOMB_DATASET'          = 'FossaApp-Local'
         'SENTRY_DSN'                 = $sentryDsn
+        'Messaging__Topic'           = 'test'
     }
 
     $userEnvironmentVariables.GetEnumerator()
