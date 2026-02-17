@@ -1,7 +1,10 @@
 using CommunityToolkit.Aspire.Hosting.PowerShell;
 using System.Management.Automation;
+using DotNetEnv;
 
 var builder = DistributedApplication.CreateBuilder(args);
+
+var envVars = Env.TraversePath().Load();
 
 var ps = builder.AddPowerShell("ps", PSLanguageMode.FullLanguage);
 
@@ -15,6 +18,11 @@ var api = builder.AddProject<Projects.API_Web>("api")
     .WithExternalHttpEndpoints()
     .WaitFor(ps)
     .WaitForCompletion(startScript);
+
+foreach (var envVar in envVars)
+{
+    api.WithEnvironment(envVar.Key, envVar.Value);
+}
 
 var app = builder.Build();
 
