@@ -22,8 +22,14 @@ exporters:
     headers:
       "x-honeycomb-team": "${HONEYCOMB_API_KEY}"
       "x-honeycomb-dataset": "${HONEYCOMB_DATASET}"
-  sentry:
-    dsn: ${SENTRY_DSN}
+  otlphttp/sentry:
+    logs_endpoint: https://o4510282140680192.ingest.us.sentry.io/api/4510282155622400/integration/otlp/v1/logs
+    traces_endpoint: https://o4510282140680192.ingest.us.sentry.io/api/4510282155622400/integration/otlp/v1/traces
+    headers:
+      x-sentry-auth: "sentry sentry_key=${SENTRY_KEY}"
+    compression: gzip
+    encoding: proto
+    timeout: 30s
 
 service:
   pipelines:
@@ -32,7 +38,7 @@ service:
       exporters: [datadog, otlphttp/honeycomb]
     traces:
       receivers: [otlp]
-      exporters: [datadog, otlphttp/honeycomb, sentry]
+      exporters: [datadog, otlphttp/honeycomb, otlphttp/sentry]
     logs:
       receivers: [otlp]
-      exporters: [datadog, otlphttp/honeycomb]
+      exporters: [datadog, otlphttp/honeycomb, otlphttp/sentry]

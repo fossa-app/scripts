@@ -19,7 +19,7 @@ task CreateDotEnv -If { -not (Test-Path -Path '.env') } {
     $connectionString = Get-Secret -Name 'FossaApp-ConnectionString' -AsPlainText
     $datadogApiKey = Get-Secret -Name 'FossaApp-DatadogApiKey' -AsPlainText
     $honeycombApiKey = Get-Secret -Name 'FossaApp-HoneycombApiKey' -AsPlainText
-    $sentryDsn = Get-Secret -Name 'FossaApp-SentryDsn' -AsPlainText
+    $sentryKey = Get-Secret -Name 'FossaApp-SentryKey' -AsPlainText
 
     $generatorId = Get-Random -Maximum 1024
 
@@ -31,7 +31,7 @@ task CreateDotEnv -If { -not (Test-Path -Path '.env') } {
         'DD_API_KEY'                 = $datadogApiKey
         'HONEYCOMB_API_KEY'          = $honeycombApiKey
         'HONEYCOMB_DATASET'          = 'FossaApp-Local'
-        'SENTRY_DSN'                 = $sentryDsn
+        'SENTRY_KEY'                 = $sentryKey
         'Messaging__Topic'           = 'test'
     }
 
