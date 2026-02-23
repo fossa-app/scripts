@@ -116,6 +116,7 @@ services:
       ConnectionStrings__MongoDB: ${ConnectionStrings__MongoDB}
       GeneratorId: ${GeneratorId}
       OTEL_EXPORTER_OTLP_ENDPOINT: http://otel-collector:4317
+      Messaging__Topic: ${Messaging__Topic}
     ports:
       - 5210:8080
     networks:
