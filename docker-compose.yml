@@ -6,7 +6,7 @@ services:
       POSTGRES_USER: fusionauth
       POSTGRES_PASSWORD: fusionauth
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -73,7 +73,7 @@ services:
       TF_VAR_fusionauth_cors_allowed_origins: '["*"]'
       TF_VAR_fusionauth_cors_allowed_methods: '["GET", "POST", "OPTIONS"]'
       TF_VAR_fusionauth_cors_allowed_headers: '["*"]'
-      TF_VAR_fusionauth_cors_exposed_headers: '[]'
+      TF_VAR_fusionauth_cors_exposed_headers: "[]"
       TF_VAR_fusionauth_cors_allow_credentials: "false"
       TF_VAR_fusionauth_cors_preflight_max_age_in_seconds: "0"
       TF_CLI_ARGS_apply: "-auto-approve"
@@ -117,6 +117,16 @@ services:
       GeneratorId: ${GeneratorId}
       OTEL_EXPORTER_OTLP_ENDPOINT: http://otel-collector:4317
       Messaging__Topic: ${Messaging__Topic}
+      Messaging__Actor__BootstrapServers__Key: ${Messaging__Actor__BootstrapServers__Key}
+      Messaging__Actor__BootstrapServers__PlainTextValue: ${Messaging__Actor__BootstrapServers__PlainTextValue}
+      Messaging__Actor__SecurityProtocol__Key: ${Messaging__Actor__SecurityProtocol__Key}
+      Messaging__Actor__SecurityProtocol__PlainTextValue: ${Messaging__Actor__SecurityProtocol__PlainTextValue}
+      Messaging__Actor__CACertificate__Key: ${Messaging__Actor__CACertificate__Key}
+      Messaging__Actor__CACertificate__Base64Value: ${Messaging__Actor__CACertificate__Base64Value}
+      Messaging__Actor__ClientCertificate__Key: ${Messaging__Actor__ClientCertificate__Key}
+      Messaging__Actor__ClientCertificate__Base64Value: ${Messaging__Actor__ClientCertificate__Base64Value}
+      Messaging__Actor__ClientCertificateKey__Key: ${Messaging__Actor__ClientCertificateKey__Key}
+      Messaging__Actor__ClientCertificateKey__Base64Value: ${Messaging__Actor__ClientCertificateKey__Base64Value}
     ports:
       - 5210:8080
     networks:

@@ -10,6 +10,8 @@ param (
 
 Set-StrictMode -Version Latest
 
+$ErrorActionPreference = 'Stop'
+
 task CreateDotEnv -If { -not (Test-Path -Path '.env') } {
     $keybaseUserName = Exec { keybase whoami }
     $environmentUserName = $keybaseUserName -replace '[^a-zA-Z]', ''
@@ -20,19 +22,32 @@ task CreateDotEnv -If { -not (Test-Path -Path '.env') } {
     $datadogApiKey = Get-Secret -Name 'FossaApp-DatadogApiKey' -AsPlainText
     $honeycombApiKey = Get-Secret -Name 'FossaApp-HoneycombApiKey' -AsPlainText
     $sentryKey = Get-Secret -Name 'FossaApp-SentryKey' -AsPlainText
+    $caCertificate = Get-Secret -Name 'FossaApp-KafkaCACertificate' -AsPlainText
+    $clientCertificate = Get-Secret -Name 'FossaApp-KafkaClientCertificate' -AsPlainText
+    $clientCertificateKey = Get-Secret -Name 'FossaApp-KafkaClientCertificateKey' -AsPlainText
 
     $generatorId = Get-Random -Maximum 1024
 
     $userEnvironmentVariables = @{
-        'DOTNET_ENVIRONMENT'         = $environmentName
-        'ASPNETCORE_ENVIRONMENT'     = $environmentName
-        'ConnectionStrings__MongoDB' = $connectionString
-        'GeneratorId'                = $generatorId
-        'DD_API_KEY'                 = $datadogApiKey
-        'HONEYCOMB_API_KEY'          = $honeycombApiKey
-        'HONEYCOMB_DATASET'          = 'FossaApp-Local'
-        'SENTRY_KEY'                 = $sentryKey
-        'Messaging__Topic'           = 'test'
+        'DOTNET_ENVIRONMENT'                                  = $environmentName
+        'ASPNETCORE_ENVIRONMENT'                              = $environmentName
+        'ConnectionStrings__MongoDB'                          = $connectionString
+        'GeneratorId'                                         = $generatorId
+        'DD_API_KEY'                                          = $datadogApiKey
+        'HONEYCOMB_API_KEY'                                   = $honeycombApiKey
+        'HONEYCOMB_DATASET'                                   = 'FossaApp-Local'
+        'SENTRY_KEY'                                          = $sentryKey
+        'Messaging__Actor__BootstrapServers__Key'             = 'bootstrap.servers'
+        'Messaging__Actor__BootstrapServers__PlainTextValue'  = 'fossa-fossaapp.f.aivencloud.com:19761'
+        'Messaging__Actor__SecurityProtocol__Key'             = 'security.protocol'
+        'Messaging__Actor__SecurityProtocol__PlainTextValue'  = 'SSL'
+        'Messaging__Actor__CACertificate__Key'                = 'ssl.ca.pem'
+        'Messaging__Actor__CACertificate__Base64Value'        = [System.Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($caCertificate))
+        'Messaging__Actor__ClientCertificate__Key'            = 'ssl.certificate.pem'
+        'Messaging__Actor__ClientCertificate__Base64Value'    = [System.Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($clientCertificate))
+        'Messaging__Actor__ClientCertificateKey__Key'         = 'ssl.key.pem'
+        'Messaging__Actor__ClientCertificateKey__Base64Value' = [System.Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($clientCertificateKey))
+        'Messaging__Topic'                                    = 'test'
     }
 
     $userEnvironmentVariables.GetEnumerator()
